@@ -1,0 +1,55 @@
+services:
+  base:
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+    image: base-image:latest
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - audio
+      - sentiment
+      - transcriber
+
+  audio:
+    build:
+      context: ./audio-analysis
+      dockerfile: Dockerfile
+    image: audio-service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - base
+
+  sentiment:
+    build:
+      context: ./sentiment-analysis
+      dockerfile: Dockerfile
+    image: sentiment-service
+    ports:
+      - "8001:8001"
+    depends_on:
+      - base
+
+  transcriber:
+    build:
+      context: ./transcriber
+      dockerfile: Dockerfile
+    image: transcriber-service
+    ports:
+      - "8002:8002"
+    depends_on:
+      - base
+

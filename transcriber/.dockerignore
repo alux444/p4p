@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pkl
+*.pt
+*.npy
+*.log
+.env
+.vscode/
+.idea/
+.DS_Store
+*.ipynb
+data/
+models/

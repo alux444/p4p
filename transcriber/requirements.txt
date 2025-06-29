@@ -1,3 +1,7 @@
-git+https://github.com/openai/whisper.git
-torch
+# install PyTorch
+# See https://pytorch.org/get-started/locally/ for install instructions
 ffmpeg-python
+openai-whisper
+fastapi
+uvicorn
+python-multipart

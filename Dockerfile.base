@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y ffmpeg && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY torch-2.3.0+cpu-cp311-cp311-linux_x86_64.whl /tmp/
+
+RUN pip install --no-cache-dir /tmp/torch-2.3.0+cpu-cp311-cp311-linux_x86_64.whl

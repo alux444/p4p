@@ -25,10 +25,11 @@ async def analyse_audio_endpoint(file: UploadFile = File(...)):
     file_path = os.path.join(AUDIO_DIR, file.filename)
     with open(file_path, "wb") as f:
         f.write(file_bytes)
+    transcription_path = os.path.join("..", "transcriber", "transcripts", f"{os.path.splitext(file.filename)[0]}_transcript.txt")
 
     try:
         start_time = time.time()
-        results = analyse_audio(file_path)
+        results = analyse_audio(file_path, transcription_path)
         duration = time.time() - start_time
 
         response = {

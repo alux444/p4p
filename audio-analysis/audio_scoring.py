@@ -2,7 +2,6 @@ import librosa
 import numpy as np
 import torch
 from transformers import Wav2Vec2FeatureExtractor, HubertForSequenceClassification
-import whisper
 
 LONG_PAUSE_THRESHOLD = 3.0
 WPM_LOWER_THRESHOLD = 90
@@ -20,11 +19,6 @@ EMOTION_FULL = {
     "neu": "Neutral",
     "hap": "Happy"
 }
-
-def transcribe(audio_path):
-    model = whisper.load_model("base")  # or "tiny", "small", "medium", "large"
-    result = model.transcribe(audio_path)
-    return result["text"]
 
 def get_fluency_score(y, sr, transcription):
     duration_sec = librosa.get_duration(y=y, sr=sr)
@@ -95,14 +89,14 @@ def get_emotion_score(audio_path):
     emotion_full = EMOTION_FULL.get(emotion, "Unknown")
     return round(emotion_score, 1), f"Detected Emotion: {emotion_full}"
 
-def analyse_audio(audio_path):
+def analyse_audio(audio_path, transcription_path):
     y, sr = librosa.load(audio_path)
-    transcription = transcribe(audio_path)
+    try:
+        with open(transcription_path, 'r') as f:
+            transcription = f.read().strip()
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Transcription file not found: {transcription_path}")
     
-    # export the transcription to a text file
-    # with open(audio_path.replace('.wav', '_transcription.txt'), 'w') as f:
-    #     f.write(transcription)
-
     fluency, fluency_feedback = get_fluency_score(y, sr, transcription)
     confidence, confidence_feedback = get_confidence_score(y, sr, transcription)
     emotion, emotion_feedback = get_emotion_score(audio_path)
